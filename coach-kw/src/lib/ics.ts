@@ -8,8 +8,8 @@ export function buildICS({
 }: {
   title: string;
   description: string;
-  startISO: string; // UTC ISO string
-  endISO: string;   // UTC ISO string
+  startISO: string; // UTC ISO
+  endISO: string;   // UTC ISO
   organizerEmail: string;
 }) {
   const uid = `${Date.now()}@booking`;
