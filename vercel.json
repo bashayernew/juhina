@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "coach-kw/package.json", "use": "@vercel/next" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "coach-kw/$1" }
+  ]
+}
+
+
