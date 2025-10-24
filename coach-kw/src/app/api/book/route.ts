@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     await resend.emails.send({
       from: process.env.BOOKING_FROM || "Bookings <onboarding@resend.dev>",
       to: process.env.BOOKING_INBOX ?? "",
-      reply_to: email,
+      replyTo: email,
       subject: `New Booking Request: ${program} — ${name}`,
       text: `
 New booking request:
