@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <circle cx="8" cy="9" r="3" stroke="#FACC15" stroke-width="1.5"/>
+  <circle cx="16" cy="9" r="3" stroke="#FACC15" stroke-width="1.5"/>
+  <path d="M3 19c0-3 2.686-5 5-5s5 2 5 5" stroke="#FACC15" stroke-width="1.5"/>
+  <path d="M11 19c0-3 2.686-5 5-5s5 2 5 5" stroke="#FACC15" stroke-width="1.5"/>
+  <title>Users</title>
+</svg>
+

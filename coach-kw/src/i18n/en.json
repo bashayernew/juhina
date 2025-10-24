@@ -1,0 +1,88 @@
+{
+  "brand": {
+    "name": "Juhainah Hussain Al-Shawaf",
+    "title": "Self-Development Coach & Consultant — Awareness, Mind Reprogramming, Energy",
+    "location": "Kuwait"
+  },
+  "nav": {
+    "home": "Home",
+    "programs": "Programs",
+    "booking": "Booking",
+    "about": "About",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "blog": "Blog"
+  },
+  "hero": {
+    "headline": "Unlock Consistent Growth and Lasting Habits",
+    "sub": "Personalized coaching and programs that fit your life, not the other way around.",
+    "ctaPrimary": "Book a Session",
+    "ctaSecondary": "Explore Programs"
+  },
+  "framework": {
+    "title": "Signature Framework",
+    "pillars": ["Clarity", "Systems", "Accountability", "Mindset"]
+  },
+  "programs": {
+    "title": "Programs",
+    "items": {
+      "one": {"name": "1:1 Coaching", "duration": "8 weeks", "price": "Custom KWD"},
+      "group": {"name": "Group Program", "duration": "6 weeks", "price": "Custom KWD", "features": ["Community", "Weekly calls", "Accountability"]},
+      "corp": {"name": "Corporate Workshop", "duration": "Half-day / Full-day", "price": "Custom KWD"},
+      "course": {"name": "Online Course", "duration": "Self-paced", "price": "Custom KWD"}
+    },
+    "cta": "View Details"
+  },
+  "testimonials": {"title": "Client Results"},
+  "about": {
+    "title": "About",
+    "bio": "Marcel El Jalkh is a self-development coach based in Kuwait.",
+    "cred": "Certifications & Press",
+    "philosophy": "Philosophy & Approach",
+    "timeline": "Milestones"
+  },
+  "contact": {
+    "title": "Contact",
+    "desc": "We usually reply within 1 business day.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "reason": "Reason",
+      "message": "Message",
+      "submit": "Send Message"
+    },
+    "hours": "Office hours",
+    "map": "Kuwait"
+  },
+  "faq": {
+    "title": "FAQs",
+    "q1": "How soon will I see results?",
+    "a1": "Most clients notice changes within 2–4 weeks of consistent work.",
+    "q2": "Can I reschedule sessions?",
+    "a2": "Yes, please reschedule at least 24 hours in advance."
+  },
+  "compare": {
+    "title": "Compare Programs",
+    "who": "Who it's for",
+    "commitment": "Commitment",
+    "price": "Price"
+  },
+  "lead": {
+    "title": "Free 7-Day Habit Builder PDF",
+    "cta": "Get the Guide"
+  },
+  "cta": {"whatsapp": "WhatsApp", "book": "Book Now"},
+  "booking": {
+    "title": "Book Your Session",
+    "desc": "Pick a time that works for you. Kuwait timezone."
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "language": "Language"
+  }
+}
+
+

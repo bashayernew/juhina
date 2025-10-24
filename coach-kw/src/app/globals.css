@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #FFFFFF; /* white */
+  --fg: #1A1A1A; /* near-black text */
+  --muted: #6B7280; /* gray-500 */
+  --accent: #FACC15; /* vivid yellow */
+  --surface: #FFFDF2; /* soft light cream */
+  --line: #FFF3BF; /* pale yellow line */
+  --card: rgba(0,0,0,0.02);
+  --card-border: var(--line);
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+  --font-arabic: var(--font-cairo);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+}
+
+html { background-color: var(--bg); }
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+html[dir="ltr"] body {
+  font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+body { background-color: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+.container-page {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.card-glass { background: var(--surface); border: 1px solid var(--card-border); border-radius: 0.75rem; box-shadow: 0 10px 24px rgba(0,0,0,0.05); }
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-colors;
+  background-color: var(--accent);
+  color: #1A1A1A;
+}
+
+.btn-primary:hover { filter: brightness(0.95); }
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md px-5 py-3 text-sm font-semibold border transition-colors;
+  border-color: var(--accent);
+  background: transparent;
+  color: var(--fg);
+}
+
+.section { @apply py-16 md:py-24; }
+
+.section-title { @apply text-3xl md:text-4xl font-serif tracking-tight; }
+
+.section-subtitle { color: var(--muted); }
+
+a { text-underline-offset: 3px; }
+
+.focus-ring { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg)]; }
