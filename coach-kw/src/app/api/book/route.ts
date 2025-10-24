@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+import { Buffer } from 'buffer';
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { buildICS } from "@/lib/ics";
