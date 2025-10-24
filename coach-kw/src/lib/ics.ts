@@ -1,3 +1,4 @@
+// coach-kw/src/lib/ics.ts
 export function buildICS({
   title,
   description,
@@ -7,12 +8,13 @@ export function buildICS({
 }: {
   title: string;
   description: string;
-  startISO: string;
-  endISO: string;
-  organizerEmail: string | undefined;
+  startISO: string; // UTC ISO string
+  endISO: string;   // UTC ISO string
+  organizerEmail: string;
 }) {
   const uid = `${Date.now()}@booking`;
   const toCal = (iso: string) => iso.replace(/[-:]/g, "").split(".")[0] + "Z";
+
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -26,7 +28,7 @@ export function buildICS({
     `DTEND:${toCal(endISO)}`,
     `SUMMARY:${title}`,
     `DESCRIPTION:${description}`,
-    `ORGANIZER:mailto:${organizerEmail ?? ""}`,
+    `ORGANIZER:mailto:${organizerEmail}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\r\n");
