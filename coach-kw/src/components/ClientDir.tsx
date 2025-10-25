@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import type { Locale } from "@/src/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 export default function ClientDir({ locale }: { locale: Locale }) {
   useEffect(() => {
