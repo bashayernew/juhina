@@ -28,7 +28,6 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       <textarea name="message" value={form.message} onChange={onChange} placeholder={t.contact.form.message} className="min-h-32 rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3 focus-ring" />
       <div className="flex gap-3">
         <button className="btn-primary" disabled={status !== "idle"}>{t.contact.form.submit}</button>
-        <a href="https://wa.me/96599986494" className="btn-secondary">WhatsApp</a>
       </div>
       {status === "done" && <p className="text-sm" style={{ color: 'var(--accent)' }}>{locale === "ar" ? "تم الإرسال!" : "Message sent!"}</p>}
     </form>

@@ -9,7 +9,6 @@ export default function CTABand({ t, locale }: { t: any; locale: "en" | "ar" }) 
           {locale === "ar" ? "جاهز للبدء؟" : "Ready to get started?"}
         </div>
         <div className="flex gap-3">
-          <a href="https://wa.me/96599986494" className="btn-secondary">{t.cta.whatsapp}</a>
           <Link href={`/${locale}/booking`} className="btn-primary">{t.cta.book}</Link>
         </div>
       </div>

@@ -28,8 +28,6 @@ export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' })
     }
   }
 
-  const wpNumber = process.env.NEXT_PUBLIC_WHATSAPP || '96599986494'
-
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
@@ -49,26 +47,9 @@ export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' })
         <button className="btn-primary" disabled={loading}>
           {loading ? t('Sending…','جارٍ الإرسال…') : t('Send Request','إرسال الطلب')}
         </button>
-        <a
-          href={`https://wa.me/${wpNumber}`}
-          onClick={(e) => {
-            e.preventDefault()
-            const form = (e.currentTarget.closest('form') as HTMLFormElement)
-            const fd = new FormData(form)
-            const payload = Object.fromEntries(fd.entries()) as any
-            const msg = t(
-              `Hello, I'd like to book ${payload.program} on ${payload.date} ${payload.time}. My name is ${payload.name}.`,
-              `مرحبًا، أرغب بحجز ${payload.program} بتاريخ ${payload.date} ${payload.time}. اسمي ${payload.name}.`
-            )
-            window.open(`https://wa.me/${wpNumber}?text=${encodeURIComponent(msg)}`, '_blank')
-          }}
-          className="btn-secondary"
-        >
-          {t('WhatsApp','واتساب')}
-        </a>
       </div>
       {ok === true && <p className="text-sm" style={{ color: 'var(--accent)' }}>{t('Sent! We will confirm within 24 hours.','تم الإرسال! سنؤكد خلال 24 ساعة.')}</p>}
-      {ok === false && <p className="text-sm" style={{ color: '#ef4444' }}>{t('Something went wrong. Try WhatsApp.','حدث خطأ. جرّب واتساب.')}</p>}
+      {ok === false && <p className="text-sm" style={{ color: '#ef4444' }}>{t('Something went wrong. Please try again.','حدث خطأ. يرجى المحاولة مرة أخرى.')}</p>}
       <p className="text-xs text-[var(--muted)]">{t(
         'Requests are emailed to our inbox. You will receive a calendar invite once confirmed.',
         'يتم إرسال الطلب إلى بريدنا الإلكتروني وستتلقى دعوة تقويم عند التأكيد.'

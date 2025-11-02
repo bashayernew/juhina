@@ -6,8 +6,8 @@
     </linearGradient>
   </defs>
   <rect width="640" height="320" rx="24" fill="url(#g1)"/>
-  <circle cx="160" cy="160" r="80" fill="#FACC15" opacity="0.12"/>
-  <circle cx="320" cy="160" r="80" fill="#FACC15" opacity="0.2"/>
-  <circle cx="480" cy="160" r="80" fill="#FACC15" opacity="0.08"/>
+  <circle cx="160" cy="160" r="80" fill="#C8A24A" opacity="0.12"/>
+  <circle cx="320" cy="160" r="80" fill="#C8A24A" opacity="0.2"/>
+  <circle cx="480" cy="160" r="80" fill="#C8A24A" opacity="0.08"/>
 </svg>
 

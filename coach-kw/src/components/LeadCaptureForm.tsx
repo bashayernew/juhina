@@ -35,7 +35,7 @@ export default function LeadCaptureForm({ t, locale }: { t: any; locale: "en" | 
             </button>
           </form>
           {status === "done" && (
-            <p className="mt-3 text-sm" style={{ color: "#22c55e" }}>{locale === "ar" ? "تم الإرسال!" : "Sent! Please check your email."}</p>
+            <p className="mt-3 text-sm" style={{ color: "var(--accent)" }}>{locale === "ar" ? "تم الإرسال!" : "Sent! Please check your email."}</p>
           )}
         </div>
       </div>
