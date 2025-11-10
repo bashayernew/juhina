@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { buildICS } from "@/lib/ics";
 
-const resend = new Resend(process.env.RESEND_API_KEY ?? "");
-
 export async function POST(req: Request) {
   try {
     const data = (await req.json()) as any;
@@ -37,6 +35,14 @@ export async function POST(req: Request) {
       endISO: end.toISOString(),
       organizerEmail: process.env.BOOKING_INBOX ?? "",
     });
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.warn("Missing RESEND_API_KEY environment variable; booking email skipped.");
+      return NextResponse.json({ ok: true, warning: "Email delivery skipped due to missing API key." });
+    }
+
+    const resend = new Resend(resendApiKey);
 
     await resend.emails.send({
       from: process.env.BOOKING_FROM || "Bookings <onboarding@resend.dev>",

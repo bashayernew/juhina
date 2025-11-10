@@ -33,6 +33,15 @@ html {
   background-repeat: no-repeat;
 }
 
+@media (max-width: 768px) {
+  html {
+    background-attachment: scroll;
+    background-size: contain;
+    background-position: top center;
+    background-repeat: no-repeat;
+  }
+}
+
 html[dir="rtl"] body {
   font-family: var(--font-arabic), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
