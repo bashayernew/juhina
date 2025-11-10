@@ -14,9 +14,6 @@ export default function Navbar({ t, locale }: { t: any; locale: "en" | "ar" }) {
           <Link href={`/${locale}`} className="hover:opacity-80 inline-flex items-center gap-1">
             <img src="/assets/icons/about.svg" alt="" className="h-4 w-4" />{nav.home}
           </Link>
-          <Link href={`/${locale}/programs`} className="hover:opacity-80 inline-flex items-center gap-1">
-            <img src="/assets/icons/programs.svg" alt="" className="h-4 w-4" />{nav.programs}
-          </Link>
           <Link href={`/${locale}/booking`} className="hover:opacity-80 inline-flex items-center gap-1">
             <img src="/assets/icons/booking.svg" alt="" className="h-4 w-4" />
             {locale === "ar" ? "الحجز والتواصل" : "Booking & Contact"}

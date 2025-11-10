@@ -10,13 +10,15 @@ export default function AboutSection({ t, locale }: { t: any; locale: "en" | "ar
     address: { "@type": "PostalAddress", addressCountry: "KW" },
     email: "Janon.m@hotmail.com",
     sameAs: [
-      "https://instagram.com/juhainah_alshawaf",
+      "https://www.instagram.com/juhainah_alshawaf?igsh=MWYwejU1MGZwNXVtdQ%3D%3D&utm_source=qr",
+      "https://t.me/+k7mGFAN6qCcyNWU0",
+      "https://youtube.com/@juhainah_alshawaf?si=PVHSwR30KjBERMZV",
       "https://linkbio.co/6122712elzlqu",
     ],
   };
 
   return (
-    <section className="section" dir={dir}>
+    <section id="about" className="section" dir={dir}>
       <div className="container-page">
         <h2 className="section-title">{t.about.title}</h2>
         <p className="mt-4 section-subtitle">{t.about.bio}</p>
@@ -47,7 +49,7 @@ export default function AboutSection({ t, locale }: { t: any; locale: "en" | "ar
 
           <aside className="card-glass p-6 order-1 md:order-2">
             <div className="relative mb-4 h-56 w-full overflow-hidden rounded-lg border border-[var(--card-border)]">
-              <img src="/assets/juhaina.jpg" alt={t.brand.name} className="h-full w-full object-cover" />
+              <img src="/assets/programs/juhaina-new.jpg" alt={t.brand.name} className="h-full w-full object-cover" />
             </div>
             <h3 className="text-lg font-semibold">{t.about.cred}</h3>
             <ul className="mt-3 space-y-2 text-sm opacity-90">

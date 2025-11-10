@@ -17,7 +17,7 @@ export default function LeadCaptureForm({ t, locale }: { t: any; locale: "en" | 
     }
   }
   return (
-    <section className="section">
+    <section id="lead" className="section">
       <div className="container-page" dir={dir}>
         <div className="card-glass p-6">
           <h3 className="text-xl font-serif">{t.lead.title}</h3>

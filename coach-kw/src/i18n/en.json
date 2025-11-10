@@ -6,7 +6,6 @@
   },
   "nav": {
     "home": "Home",
-    "programs": "Programs",
     "booking": "Booking",
     "about": "About",
     "testimonials": "Testimonials",
@@ -14,10 +13,60 @@
     "blog": "Blog"
   },
   "hero": {
-    "headline": "Unlock Consistent Growth and Lasting Habits",
-    "sub": "Personalized coaching and programs that fit your life, not the other way around.",
+    "headline": "Manifest your reality.",
+    "sub": "Personal coaching for awareness, mindset, and energy mastery.",
+    "nameEn": "Juhainah Al-Shawaf",
+    "nameAr": "جهينة الشواف",
     "ctaPrimary": "Book a Session",
-    "ctaSecondary": "Explore Programs"
+    "identity": [
+      "Coach and mentor in mind sciences and manifestation.",
+      "I guide you to elevate your outcomes by working from the inside out—clarifying how the conscious and subconscious mind operate and aligning your emotions with your mission.",
+      "My experience was shaped through programs such as Wealthy Mind and Mindvalley, and mentorship from teachers including Bob Proctor, Hamad Al-Failakawi, Abdulaziz Kakoli, Vishen Lakhiani, and Regan Hillyer. I now continue my journey of learning and guiding under Al-Failakawi’s mentorship to offer you a clear, actionable path toward the results you desire."
+    ],
+    "callout": [
+      "You feel something bigger is waiting for you—but you can’t see the path yet.",
+      "You’ve tried to create lasting change before, only to end up back where you started.",
+      "You know exactly what you want, yet the step-by-step plan still feels out of reach."
+    ],
+    "calloutButton": "Then this consultation is for you",
+    "beliefsTitle": "Common Traps in Traditional Thinking",
+    "beliefs": [
+      "Most people believe that achieving their goals is a matter of changing habits or sticking to a new routine.",
+      "So they force themselves into strict schedules, copy someone else’s exact strategy, or push nonstop in the name of productivity.",
+      "Inevitably, exhaustion kicks in, motivation dips, and they slide back to square one—frustrated.",
+      "Here’s why: they try to change the outside while the real source of results lives inside. Habits and behaviors are just surface-level symptoms.",
+      "The roots are your thoughts, self-image, and the deep mental programs driving every decision—often without you noticing.",
+      "When change starts at the surface, it fades fast. When it begins in the mind, it becomes permanent and life-defining."
+    ],
+    "beliefsButton": "It’s time to change!",
+    "discovery": {
+      "title": "What Do I Offer You?",
+      "description": "A free discovery consultation that unlocks the door to reconnecting with your higher purpose and transforming your results.",
+      "audienceTitle": "This session is perfect if you’re",
+      "items": [
+        "Searching for your calling or a deeper meaning in life: you feel there’s more for you, but you need a practical roadmap.",
+        "Holding a clear goal yet the path feels confusing: your ambition, project, or personal shift stalls because of overwhelm or hesitation.",
+        "Craving a mentor who’s practical: seasoned guidance that saves time, reduces missteps, and translates vision into action.",
+        "Wanting a supportive community: an environment that encourages you and celebrates your progress.",
+        "Ready for an actionable system: simple daily steps, clear progress markers, and short, powerful awareness exercises."
+      ],
+      "button": "Book Your Consultation"
+    },
+    "sessionDetails": {
+      "title": "Consultation Details",
+      "description": "We begin with guided, insightful questions to understand your goals and the obstacles in your way. You’ll learn what a paradigm is and how it reshapes the habits and beliefs that keep repeating your results. Together we outline the first model of your future self-image and map how to reach it—until the right solution emerges to upgrade your outcomes from the inside out.",
+      "button": "Ready to begin?"
+    },
+    "paradigm": {
+      "title": "What is the Paradigm?",
+      "paragraphs": [
+        "Is it just another buzzword in the information age? Maybe. Yet it’s one worth pausing for, because—like most people—you might be completely under its influence without realizing it.",
+        "So what exactly is a paradigm, and why does it matter in everyday life? Think of it as a collection of layered habits.",
+        "More often than not, you didn’t consciously build those habits, yet they steer almost everything you do.",
+        "Your paradigm shapes how you eat, walk, and even speak. When you learn how to shift it, doors of power, opportunity, and possibility swing wide open."
+      ],
+      "button": "I’ll take the first step"
+    }
   },
   "framework": {
     "title": "Signature Framework",

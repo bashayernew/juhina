@@ -35,9 +35,7 @@ export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' })
         <input type="email" name="email" required placeholder={t('Email','البريد الإلكتروني')} className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3" />
         <input name="phone" required placeholder={t('Phone','الهاتف')} className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3" />
         <select name="program" required className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3">
-          <option value="1:1 Coaching">{t('1:1 Coaching','جلسات فردية')}</option>
-          <option value="Group Program">{t('Group Program','برنامج جماعي')}</option>
-          <option value="Corporate Workshop">{t('Corporate Workshop','ورش عمل للشركات')}</option>
+          <option value="Consultation">{t('Book a Consultation','احجز استشارة')}</option>
         </select>
         <input type="date" name="date" required className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3" />
         <input type="time" name="time" required className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3" />

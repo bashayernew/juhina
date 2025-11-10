@@ -5,7 +5,7 @@ export default function ProgramsTeaser({ t, locale }: { t: any; locale: "en" | "
   const dir = locale === "ar" ? "rtl" : "ltr";
   const items = t.programs.items;
   return (
-    <section className="section">
+    <section id="programs" className="section">
       <div className="container-page" dir={dir}>
         <h2 className="section-title">{t.programs.title}</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -43,7 +43,9 @@ export default function ProgramsTeaser({ t, locale }: { t: any; locale: "en" | "
                     <div className="inline-flex items-center gap-2"><img src="/assets/icons/check.svg" className="h-5 w-5" alt="" aria-hidden="true" />{locale === "ar" ? "سعر حسب الطلب" : "Custom Quote"}</div>
                   </div>
                 )}
-                <Link href={`/${locale}/programs`} className="btn-secondary mt-6 inline-flex">{t.programs.cta}</Link>
+                <Link href={`/${locale}/booking?program=${encodeURIComponent(p.name)}`} className="btn-secondary mt-6 inline-flex">
+                  {locale === "ar" ? "احجز هذا الخيار" : "Book this option"}
+                </Link>
               </div>
             </div>
           ))}

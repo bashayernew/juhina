@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #FFFFFF; /* white */
+  --bg: #000000; /* deep black to frame full portrait */
   --fg: rgba(255, 255, 255, 0.95); /* white text */
   --muted: rgba(255, 255, 255, 0.75); /* light muted text */
   --accent: #C8A24A; /* gold */
@@ -26,9 +26,9 @@
 
 html { 
   background-color: var(--bg);
-  background-image: url("/assets/programs/juhaina%20golden.webp");
-  background-size: cover;
-  background-position: center;
+  background-image: url("/assets/programs/juhaina-new.jpg");
+  background-size: contain;
+  background-position: top center;
   background-attachment: fixed;
   background-repeat: no-repeat;
 }

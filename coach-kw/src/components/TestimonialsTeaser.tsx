@@ -6,7 +6,7 @@ export default function TestimonialsTeaser({ t, locale }: { t: any; locale: "en"
     { name: "N.R.", text: "Work and life in balance." },
   ];
   return (
-    <section className="section">
+    <section id="testimonials" className="section">
       <div className="container-page" dir={dir}>
         <h2 className="section-title">{t.testimonials.title}</h2>
         <div className="mt-8 grid gap-4 md:grid-cols-3">

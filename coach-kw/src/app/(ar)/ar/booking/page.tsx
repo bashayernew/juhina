@@ -22,7 +22,7 @@ export default function BookingPage() {
         </div>
       </div>
       <div className="mt-6">
-        <ContactInfo locale="ar" />
+        <ContactInfo locale="ar" showHours={false} showSocial />
       </div>
     </main>
   );
