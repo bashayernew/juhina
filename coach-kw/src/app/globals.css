@@ -24,22 +24,8 @@
   --font-serif: var(--font-serif);
 }
 
-html { 
+html {
   background-color: var(--bg);
-  background-image: url("/assets/programs/juhaina-new.jpg");
-  background-size: contain;
-  background-position: top center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-}
-
-@media (max-width: 768px) {
-  html {
-    background-attachment: scroll;
-    background-size: contain;
-    background-position: top center;
-    background-repeat: no-repeat;
-  }
 }
 
 html[dir="rtl"] body {
@@ -50,12 +36,50 @@ html[dir="ltr"] body {
   font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-body { 
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  position: relative;
   background-color: transparent;
-  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3));
-  color: rgba(255, 255, 255, 0.95); 
-  -webkit-font-smoothing: antialiased; 
-  -moz-osx-font-smoothing: grayscale; 
+  color: rgba(255, 255, 255, 0.95);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -2;
+  background-color: var(--bg);
+  background-image: url("/assets/programs/juhaina-new.jpg");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+}
+
+body::after {
+  z-index: -1;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45));
+}
+
+@media (max-width: 768px) {
+  body::before {
+    background-position: center top;
+    background-size: auto 110%;
+  }
+
+  body::after {
+    position: fixed;
+  }
 }
 
 .container-page {
