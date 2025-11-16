@@ -14,10 +14,10 @@
   },
   "hero": {
     "headline": "Manifest your reality.",
-    "sub": "Personal coaching for awareness, mindset, and energy mastery.",
+    "sub": "",
     "nameEn": "Juhainah Al-Shawaf",
     "nameAr": "جهينة الشواف",
-    "ctaPrimary": "Book a Session",
+    "ctaPrimary": "",
     "identity": [
       "Coach and mentor in mind sciences and manifestation.",
       "I guide you to elevate your outcomes by working from the inside out—clarifying how the conscious and subconscious mind operate and aligning your emotions with your mission.",
@@ -106,10 +106,12 @@
   },
   "faq": {
     "title": "FAQs",
-    "q1": "How soon will I see results?",
-    "a1": "Most clients notice changes within 2–4 weeks of consistent work.",
-    "q2": "Can I reschedule sessions?",
-    "a2": "Yes, please reschedule at least 24 hours in advance."
+    "q1": "What’s the session fee?",
+    "a1": "The session is free with prior booking. Weekly slots are limited for quality and focus.",
+    "q2": "How long is the consultation?",
+    "a2": "About 60 minutes online via Zoom.",
+    "q3": "What will I gain from the session?",
+    "a3": "Clarity on ways that can help you move toward your higher purpose and goals."
   },
   "compare": {
     "title": "Compare Programs",

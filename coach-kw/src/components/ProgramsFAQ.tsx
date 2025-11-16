@@ -3,7 +3,8 @@ export default function ProgramsFAQ({ t, locale }: { t: any; locale: "en" | "ar"
   const items = [
     { q: t.faq.q1, a: t.faq.a1 },
     { q: t.faq.q2, a: t.faq.a2 },
-  ];
+    t.faq.q3 && t.faq.a3 ? { q: t.faq.q3, a: t.faq.a3 } : null,
+  ].filter(Boolean) as Array<{ q: string; a: string }>;
   return (
     <section className="section">
       <div className="container-page" dir={dir}>

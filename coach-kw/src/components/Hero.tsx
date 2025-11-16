@@ -8,10 +8,7 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
   const heroLines =
     locale === "ar"
       ? [{ text: t.hero.headline, dir: "rtl" as const }]
-      : [
-          { text: "اجعل واقعك يتجلّى.", dir: "rtl" as const },
-          { text: t.hero.headline, dir: "ltr" as const },
-        ];
+      : [{ text: t.hero.headline, dir: "ltr" as const }];
   const textAlign = isRTL ? "text-right" : "text-left";
   const beliefItemLayout = isRTL ? "flex items-start gap-4 flex-row-reverse text-right" : "flex items-start gap-4";
   const listItemLayout = isRTL ? "flex items-start gap-3 flex-row-reverse text-right" : "flex items-start gap-3";
@@ -42,11 +39,13 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
             <p className="mt-6 max-w-2xl text-base text-[var(--muted)] md:text-lg" dir={locale === "ar" ? "rtl" : "ltr"}>
               {t.hero.sub}
             </p>
-            <div className="mt-10 flex justify-center">
-              <Link href={`/${locale}/booking`} className="btn-primary">
-                {t.hero.ctaPrimary}
-              </Link>
-            </div>
+            {t.hero.ctaPrimary && String(t.hero.ctaPrimary).trim().length > 0 && (
+              <div className="mt-10 flex justify-center">
+                <Link href={`/${locale}/booking`} className="btn-primary">
+                  {t.hero.ctaPrimary}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
@@ -60,8 +59,11 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
 
       <section id="identity" className="py-24 mt-12">
         <div className="container-page mx-auto flex max-w-4xl flex-col items-center text-center text-[var(--fg)]">
-          <span className="text-lg md:text-xl text-[var(--muted)]">{t.hero.nameAr}</span>
-          <h2 className="mt-4 font-serif text-4xl md:text-5xl">{t.hero.nameEn}</h2>
+          {locale === "ar" ? (
+            <h2 className="mt-4 font-serif text-4xl md:text-5xl">{t.hero.nameAr}</h2>
+          ) : (
+            <h2 className="mt-4 font-serif text-4xl md:text-5xl">{t.hero.nameEn}</h2>
+          )}
           <p className="mt-8 max-w-3xl text-base md:text-lg text-[var(--muted)]" dir={locale === "ar" ? "rtl" : "ltr"}>
             {t.hero.sub}
           </p>
