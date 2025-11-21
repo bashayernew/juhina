@@ -1,14 +1,122 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 type Locale = "en" | "ar";
 
+function DesireFormSection({ t, locale, textAlign }: { t: any; locale: Locale; textAlign: string }) {
+  const [desire, setDesire] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!desire.trim()) return;
+
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/desire", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ desire: desire.trim(), email: email.trim() || undefined, name: name.trim() || undefined }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus("success");
+        setDesire("");
+        setEmail("");
+        setName("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <section id="discovery" className="py-20">
+      <div className="container-page mx-auto flex max-w-5xl flex-col gap-8 text-[var(--fg)]">
+        <div className="rounded-3xl border border-[var(--accent)]/35 bg-white/95 p-12 shadow-2xl backdrop-blur">
+          <div className="flex flex-col gap-8" dir={locale === "ar" ? "rtl" : "ltr"}>
+            <div className={`flex flex-col gap-3 text-neutral-900 ${textAlign}`}>
+              <span className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">
+                {locale === "ar" ? "Discovery Session" : "Discovery Session"}
+              </span>
+              <h3 className="font-serif text-3xl md:text-4xl">{t.title}</h3>
+              <p className="text-base md:text-lg text-neutral-700 leading-relaxed">{t.description}</p>
+            </div>
+
+            <div className={`flex flex-col gap-4 ${textAlign}`}>
+              <p className="text-lg font-semibold text-neutral-900 leading-relaxed">{t.question}</p>
+              
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
+                  <textarea
+                    value={desire}
+                    onChange={(e) => setDesire(e.target.value)}
+                    placeholder={t.placeholder}
+                    required
+                    rows={6}
+                    className="w-full rounded-2xl border border-[var(--accent)]/30 bg-white/80 px-6 py-4 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+                    dir={locale === "ar" ? "rtl" : "ltr"}
+                  />
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={locale === "ar" ? "الاسم (اختياري)" : "Name (optional)"}
+                      className="rounded-xl border border-[var(--accent)]/30 bg-white/80 px-4 py-3 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+                      dir={locale === "ar" ? "rtl" : "ltr"}
+                    />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={locale === "ar" ? "البريد الإلكتروني (اختياري)" : "Email (optional)"}
+                      className="rounded-xl border border-[var(--accent)]/30 bg-white/80 px-4 py-3 text-base text-neutral-900 placeholder:text-neutral-400 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
+                      dir={locale === "ar" ? "rtl" : "ltr"}
+                    />
+                  </div>
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={status === "loading" || !desire.trim()}
+                  className="btn-primary self-start px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {status === "loading" ? t.sending : t.button}
+                </button>
+
+                {status === "success" && (
+                  <p className="text-base font-medium text-[var(--accent)]">{t.success}</p>
+                )}
+                {status === "error" && (
+                  <p className="text-base font-medium text-red-500">{t.error}</p>
+                )}
+              </form>
+
+              <div className={`mt-6 ${textAlign}`}>
+                <Link href={`/${locale}/booking`} className="btn-primary px-8 py-3 inline-block">
+                  {locale === "ar" ? "اريد حجز استشارة" : "I want to book a consultation"}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Hero({ t, locale }: { t: any; locale: Locale }) {
   const isRTL = locale === "ar";
-  const heroLines =
-    locale === "ar"
-      ? [{ text: t.hero.headline, dir: "rtl" as const }]
-      : [{ text: t.hero.headline, dir: "ltr" as const }];
+  const enHeadline = "Manifest your reality.";
+  const arHeadline = "اجعل واقعك يتجلّى.";
   const textAlign = isRTL ? "text-right" : "text-left";
   const beliefItemLayout = isRTL ? "flex items-start gap-4 flex-row-reverse text-right" : "flex items-start gap-4";
   const listItemLayout = isRTL ? "flex items-start gap-3 flex-row-reverse text-right" : "flex items-start gap-3";
@@ -29,12 +137,13 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
 
         <div className="container-page relative mx-auto flex min-h-screen items-center justify-center py-16">
           <div className="relative z-10 flex max-w-3xl flex-col items-center text-center">
-            <div className="space-y-2 font-serif text-4xl md:text-5xl lg:text-6xl">
-              {heroLines.map(({ text, dir }) => (
-                <span key={text} className="block leading-tight" dir={dir}>
-                  {text}
-                </span>
-              ))}
+            <div className="space-y-2">
+              <div className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight" dir="ltr">
+                {enHeadline}
+              </div>
+              <div className="font-serif text-lg md:text-xl lg:text-2xl text-[var(--muted)] leading-tight mt-2" dir="rtl">
+                {arHeadline}
+              </div>
             </div>
             <p className="mt-6 max-w-2xl text-base text-[var(--muted)] md:text-lg" dir={locale === "ar" ? "rtl" : "ltr"}>
               {t.hero.sub}
@@ -87,8 +196,7 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
               dir={locale === "ar" ? "rtl" : "ltr"}
             >
               <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.15),_transparent_55%)]" />
-              <div className="absolute inset-y-0 left-0 w-1 bg-[var(--accent)]/70" />
-              <div className="ml-4 flex flex-col gap-8 lg:flex-row lg:items-center">
+              <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
                 <div className="flex-1">
                   <div className={`flex flex-col gap-4 text-base md:text-xl text-white/90 ${textAlign}`}>
                     {t.hero.callout.map((line: string, index: number) => (
@@ -139,26 +247,32 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
                   </h3>
                 </div>
 
-                <div className={`grid gap-4 text-base md:text-lg text-[var(--muted)] ${textAlign}`} dir={locale === "ar" ? "rtl" : "ltr"}>
-                  {t.hero.beliefs.map((point: string, index: number) => (
-                    <div
-                      key={point}
-                      className="group relative rounded-2xl border border-white/10 bg-gradient-to-r from-white/5 to-white/0 px-6 py-5 transition duration-300 hover:border-[var(--accent)] hover:bg-white/10"
-                    >
-                      <div className={`${beliefItemLayout} ${isRTL ? "pl-4" : "pr-4"}`}>
-                        <span
-                          className={`mt-1 flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[var(--accent)]/70 bg-black/70 text-sm font-semibold text-[var(--accent)] ${
-                            isRTL ? "order-2" : ""
-                          }`}
+                <div className={`text-base md:text-lg text-[var(--muted)] leading-relaxed ${textAlign}`} dir={locale === "ar" ? "rtl" : "ltr"}>
+                  {t.hero.beliefs.length === 1 ? (
+                    <p>{t.hero.beliefs[0]}</p>
+                  ) : (
+                    <div className={`grid gap-4`}>
+                      {t.hero.beliefs.map((point: string, index: number) => (
+                        <div
+                          key={point}
+                          className="group relative rounded-2xl border border-white/10 bg-gradient-to-r from-white/5 to-white/0 px-6 py-5 transition duration-300 hover:border-[var(--accent)] hover:bg-white/10"
                         >
-                          {index + 1}
-                        </span>
-                        <p className={`flex-1 leading-relaxed ${textAlign}`} dir={locale === "ar" ? "rtl" : "ltr"}>
-                          {point}
-                        </p>
-                      </div>
+                          <div className={`${beliefItemLayout} ${isRTL ? "pl-4" : "pr-4"}`}>
+                            <span
+                              className={`mt-1 flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[var(--accent)]/70 bg-black/70 text-sm font-semibold text-[var(--accent)] ${
+                                isRTL ? "order-2" : ""
+                              }`}
+                            >
+                              {index + 1}
+                            </span>
+                            <p className={`flex-1 leading-relaxed ${textAlign}`} dir={locale === "ar" ? "rtl" : "ltr"}>
+                              {point}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 <div className={locale === "ar" ? "self-start" : "self-start"}>
@@ -173,47 +287,7 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
       )}
 
       {t.hero.discovery?.title && (
-        <section id="discovery" className="py-20">
-          <div className="container-page mx-auto flex max-w-5xl flex-col gap-8 text-[var(--fg)]">
-            <div className="rounded-3xl border border-[var(--accent)]/35 bg-white/95 p-12 shadow-2xl backdrop-blur">
-              <div className="flex flex-col gap-8" dir={locale === "ar" ? "rtl" : "ltr"}>
-                <div className={`flex flex-col gap-3 text-neutral-900 ${textAlign}`}>
-                  <span className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">
-                    {locale === "ar" ? "Discovery Session" : "Discovery Session"}
-                  </span>
-                  <h3 className="font-serif text-3xl md:text-4xl">{t.hero.discovery.title}</h3>
-                  <p className="text-base md:text-lg text-neutral-700">{t.hero.discovery.description}</p>
-                </div>
-
-                <div className={`flex flex-col gap-4 ${textAlign}`}>
-                  <h4 className="text-lg font-semibold text-neutral-900">{t.hero.discovery.audienceTitle}</h4>
-                  {Array.isArray(t.hero.discovery.items) && t.hero.discovery.items.length > 0 && (
-                    <ul className="grid gap-3 text-base md:text-lg text-neutral-700">
-                      {t.hero.discovery.items.map((item: string) => (
-                        <li
-                          key={item}
-                          className={`rounded-2xl border border-[var(--accent)]/20 bg-neutral-50 px-6 py-4 text-neutral-800 ${textAlign}`}
-                          dir={locale === "ar" ? "rtl" : "ltr"}
-                        >
-                          <div className={listItemLayout}>
-                            <span className="mt-2 flex h-2 w-2 flex-none rounded-full bg-[var(--accent)]" />
-                            <span className="leading-relaxed">{item}</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className={locale === "ar" ? "self-start" : "self-start"}>
-                  <Link href={`/${locale}/booking`} className="btn-primary px-7 py-3">
-                    {t.hero.discovery.button}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <DesireFormSection t={t.hero.discovery} locale={locale} textAlign={textAlign} />
       )}
 
       {t.hero.sessionDetails?.title && (
@@ -241,36 +315,7 @@ export default function Hero({ t, locale }: { t: any; locale: Locale }) {
         </section>
       )}
 
-      {t.hero.paradigm?.title && (
-        <section id="paradigm" className="py-20">
-          <div className="container-page mx-auto flex max-w-5xl flex-col gap-10 text-[var(--fg)]">
-            <div className="rounded-3xl border border-[var(--accent)]/35 bg-white/95 p-12 shadow-2xl backdrop-blur">
-              <div className={`flex flex-col gap-6 text-neutral-900 ${textAlign}`} dir={locale === "ar" ? "rtl" : "ltr"}>
-                <div className="flex flex-col gap-3">
-                  <span className="text-sm uppercase tracking-[0.3em] text-[var(--accent)]">
-                    {locale === "ar" ? "Paradigm Shift" : "Paradigm Shift"}
-                  </span>
-                  <h3 className="font-serif text-3xl md:text-4xl">{t.hero.paradigm.title}</h3>
-                </div>
-                {Array.isArray(t.hero.paradigm.paragraphs) && t.hero.paradigm.paragraphs.length > 0 && (
-                  <div className="flex flex-col gap-4 text-base md:text-lg text-neutral-700">
-                    {t.hero.paradigm.paragraphs.map((paragraph: string) => (
-                      <p key={paragraph} className="leading-relaxed">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                )}
-                <div className={locale === "ar" ? "self-start" : "self-start"}>
-                  <Link href={`/${locale}/booking`} className="btn-primary px-7 py-3">
-                    {t.hero.paradigm.button}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      {/* paradigm section removed per request */}
     </>
   );
 }

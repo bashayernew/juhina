@@ -41,16 +41,13 @@
     "beliefsButton": "It’s time to change!",
     "discovery": {
       "title": "What Do I Offer You?",
-      "description": "A free discovery consultation that unlocks the door to reconnecting with your higher purpose and transforming your results.",
-      "audienceTitle": "This session is perfect if you’re",
-      "items": [
-        "Searching for your calling or a deeper meaning in life: you feel there’s more for you, but you need a practical roadmap.",
-        "Holding a clear goal yet the path feels confusing: your ambition, project, or personal shift stalls because of overwhelm or hesitation.",
-        "Craving a mentor who’s practical: seasoned guidance that saves time, reduces missteps, and translates vision into action.",
-        "Wanting a supportive community: an environment that encourages you and celebrates your progress.",
-        "Ready for an actionable system: simple daily steps, clear progress markers, and short, powerful awareness exercises."
-      ],
-      "button": "Book Your Consultation"
+      "description": "True desire is the first spark of any achievement—it's the idea and dream that keeps returning to your mind and heart no matter how circumstances change.",
+      "question": "What is the sincere desire from your heart that you want to transform from a wish into reality? I will guide you to achieve it...",
+      "placeholder": "Write your desire here...",
+      "button": "Send",
+      "sending": "Sending...",
+      "success": "Thank you! Your desire has been sent successfully.",
+      "error": "An error occurred. Please try again."
     },
     "sessionDetails": {
       "title": "Consultation Details",
@@ -82,7 +79,7 @@
     },
     "cta": "View Details"
   },
-  "testimonials": {"title": "Client Results"},
+  "testimonials": {"title": "Clients Opinion"},
   "about": {
     "title": "About",
     "bio": "Marcel El Jalkh is a self-development coach based in Kuwait.",

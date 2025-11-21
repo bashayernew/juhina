@@ -5,18 +5,55 @@ import { useState } from "react";
 export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar" }) {
   const dir = locale === "ar" ? "rtl" : "ltr";
   const [form, setForm] = useState({ name: "", email: "", phone: "", reason: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
   };
+  
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!form.name || !form.email || !form.message) {
+      setStatus("error");
+      setErrorMessage(locale === "ar" ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields");
+      return;
+    }
+    
+    console.log("[CONTACT] Frontend: Submitting contact form", form);
+    
     setStatus("loading");
+    setErrorMessage("");
+    
     try {
-      await fetch("https://formspree.io/f/your-id", { method: "POST", body: JSON.stringify(form), headers: { "Content-Type": "application/json" } });
-      setStatus("done");
-    } catch {
-      setStatus("idle");
+      const apiUrl = "/api/contact";
+      console.log("[CONTACT] Frontend: POSTing to", apiUrl);
+      
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      
+      const data = await res.json();
+      console.log("[CONTACT] Frontend: API response status", res.status);
+      console.log("[CONTACT] Frontend: API response data", data);
+      
+      if (res.ok && data.ok) {
+        console.log("[CONTACT] Frontend: Contact form submitted successfully");
+        setStatus("success");
+        setForm({ name: "", email: "", phone: "", reason: "", message: "" });
+      } else {
+        console.error("[CONTACT] Frontend: Contact failed", data.error);
+        setStatus("error");
+        setErrorMessage(data.error || (locale === "ar" ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
+      }
+    } catch (error: any) {
+      console.error("[CONTACT] Frontend: Network error", error);
+      setStatus("error");
+      setErrorMessage(locale === "ar" ? "حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى." : "Connection error. Please try again.");
     }
   }
   return (
@@ -27,9 +64,28 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       <input name="reason" value={form.reason} onChange={onChange} placeholder={t.contact.form.reason} className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3 focus-ring" />
       <textarea name="message" value={form.message} onChange={onChange} placeholder={t.contact.form.message} className="min-h-32 rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3 focus-ring" />
       <div className="flex gap-3">
-        <button className="btn-primary" disabled={status !== "idle"}>{t.contact.form.submit}</button>
+        <button className="btn-primary" disabled={status === "loading"}>
+          {status === "loading" 
+            ? (locale === "ar" ? "جارٍ الإرسال…" : "Sending…") 
+            : t.contact.form.submit}
+        </button>
       </div>
-      {status === "done" && <p className="text-sm" style={{ color: 'var(--accent)' }}>{locale === "ar" ? "تم الإرسال!" : "Message sent!"}</p>}
+      
+      {status === "success" && (
+        <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(200, 162, 74, 0.1)', border: '1px solid var(--accent)' }}>
+          <p className="text-sm font-medium" style={{ color: 'var(--accent)' }}>
+            {locale === "ar" ? "✓ تم الإرسال!" : "✓ Message sent!"}
+          </p>
+        </div>
+      )}
+      
+      {status === "error" && (
+        <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444' }}>
+          <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
+            {errorMessage || (locale === "ar" ? "✗ حدث خطأ. يرجى المحاولة مرة أخرى." : "✗ Something went wrong. Please try again.")}
+          </p>
+        </div>
+      )}
     </form>
   );
 }

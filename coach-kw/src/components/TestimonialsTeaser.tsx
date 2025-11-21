@@ -39,17 +39,22 @@ export default function TestimonialsTeaser({ t, locale }: { t: any; locale: "en"
   return (
     <section id="testimonials" className="section">
       <div className="container-page" dir={dir}>
-        <h2 className="section-title">{t.testimonials.title}</h2>
+        <div className="text-center mb-4">
+          <h2 className="section-title text-white">{t.testimonials.title}</h2>
+          {t.testimonials.subtitle && (
+            <p className="text-lg text-white mt-2">{t.testimonials.subtitle}</p>
+          )}
+        </div>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {quotes.map((q) => (
             <figure key={q.name} className="card-glass p-6">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full border border-[var(--card-border)] bg-white/70 flex items-center justify-center text-xs font-semibold text-[var(--muted)]">
+                <div className="h-10 w-10 rounded-full border border-[var(--card-border)] bg-white/70 flex items-center justify-center text-xs font-semibold text-white">
                   {q.name.replace(/\./g, "").slice(0,2)}
                 </div>
-                <figcaption className="text-xs text-[var(--muted)]">{q.name}</figcaption>
+                <figcaption className="text-xs text-white">{q.name}</figcaption>
               </div>
-              <blockquote className="mt-3 text-sm opacity-90">“{q.text}”</blockquote>
+              <blockquote className="mt-3 text-sm text-white">"{q.text}"</blockquote>
             </figure>
           ))}
         </div>
