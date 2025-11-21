@@ -20,8 +20,9 @@ export async function POST(req: Request) {
     }
 
     // Set email addresses with fallbacks
-    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.BOOKING_INBOX || "Janon.m@hotmail.com";
-    const fromEmail = process.env.FROM_EMAIL || process.env.BOOKING_FROM || "CoachKW <onboarding@resend.dev>";
+    // Note: Resend free tier only allows sending to the account email address
+    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.CONTACT_INBOX || process.env.BOOKING_INBOX || "life21545@gmail.com";
+    const fromEmail = process.env.FROM_EMAIL || process.env.CONTACT_FROM || process.env.BOOKING_FROM || "CoachKW <onboarding@resend.dev>";
     const resendApiKey = process.env.RESEND_API_KEY;
     
     console.log("[CONTACT] env check", { hasKey: !!resendApiKey, to: toEmail, from: fromEmail });

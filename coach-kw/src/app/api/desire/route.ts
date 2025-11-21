@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     await resend.emails.send({
       from: process.env.DESIRE_FROM || process.env.BOOKING_FROM || "Desire Submission <onboarding@resend.dev>",
-      to: process.env.DESIRE_INBOX || process.env.BOOKING_INBOX || "",
+      to: process.env.DESIRE_INBOX || process.env.BOOKING_INBOX || "life21545@gmail.com",
       replyTo: email || undefined,
       subject: `New Desire Submission${name ? ` — ${name}` : ""}`,
       text: `
