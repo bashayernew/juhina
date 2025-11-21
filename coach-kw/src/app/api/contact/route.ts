@@ -20,8 +20,11 @@ export async function POST(req: Request) {
     }
 
     // Set email addresses with fallbacks
-    // Note: Resend free tier only allows sending to the account email address
-    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.CONTACT_INBOX || process.env.BOOKING_INBOX || "life21545@gmail.com";
+    // IMPORTANT: To send to Janon.m@hotmail.com (or any email), you must verify a domain in Resend
+    // 1. Go to https://resend.com/domains and verify your domain (e.g., juhina.vercel.app)
+    // 2. Set FROM_EMAIL env var to use your verified domain: "CoachKW <noreply@yourdomain.com>"
+    // 3. Then you can send to any email address including Janon.m@hotmail.com
+    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.CONTACT_INBOX || process.env.BOOKING_INBOX || "Janon.m@hotmail.com";
     const fromEmail = process.env.FROM_EMAIL || process.env.CONTACT_FROM || process.env.BOOKING_FROM || "CoachKW <onboarding@resend.dev>";
     const resendApiKey = process.env.RESEND_API_KEY;
     

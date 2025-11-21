@@ -21,9 +21,13 @@ export async function POST(req: Request) {
 
     const resend = new Resend(resendApiKey);
 
+    // IMPORTANT: To send to Janon.m@hotmail.com (or any email), you must verify a domain in Resend
+    // 1. Go to https://resend.com/domains and verify your domain (e.g., juhina.vercel.app)
+    // 2. Set FROM_EMAIL env var to use your verified domain: "CoachKW <noreply@yourdomain.com>"
+    // 3. Then you can send to any email address including Janon.m@hotmail.com
     await resend.emails.send({
       from: process.env.DESIRE_FROM || process.env.BOOKING_FROM || "Desire Submission <onboarding@resend.dev>",
-      to: process.env.DESIRE_INBOX || process.env.BOOKING_INBOX || "life21545@gmail.com",
+      to: process.env.DESIRE_INBOX || process.env.BOOKING_INBOX || "Janon.m@hotmail.com",
       replyTo: email || undefined,
       subject: `New Desire Submission${name ? ` — ${name}` : ""}`,
       text: `
