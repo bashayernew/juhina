@@ -125,7 +125,13 @@ Notes: ${notes || "-"}
 
     console.log("[BOOKING] resend response", emailResult);
 
-    return NextResponse.json({ ok: true, emailId: emailResult.id }, { status: 200 });
+    if (emailResult.error) {
+      console.error("[BOOKING] resend error", emailResult.error);
+      return NextResponse.json({ ok: false, error: emailResult.error.message || "Failed to send email" }, { status: 500 });
+    }
+
+    const emailId = (emailResult.data as any)?.id || null;
+    return NextResponse.json({ ok: true, emailId }, { status: 200 });
     
   } catch (error: any) {
     console.error("[BOOKING] resend error", error);
