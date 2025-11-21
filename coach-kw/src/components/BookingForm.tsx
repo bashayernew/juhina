@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { ar } from 'date-fns/locale'
 
 export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' }) {
   const [loading, setLoading] = useState(false)
@@ -100,10 +101,8 @@ export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' })
             wrapperClassName="w-full"
             calendarClassName="!bg-black !border-[var(--card-border)]"
             dayClassName={(date) => "!text-white hover:!bg-[var(--accent)]"}
-            monthClassName="!text-white"
-            yearClassName="!text-white"
             popperClassName="!z-50"
-            locale={locale === 'ar' ? 'ar' : 'en'}
+            locale={locale === 'ar' ? ar : undefined}
           />
         </div>
         <div>
