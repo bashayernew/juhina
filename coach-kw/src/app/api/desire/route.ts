@@ -14,7 +14,15 @@ export async function POST(req: Request) {
     const to =
       process.env.DESIRE_INBOX ||
       process.env.MAIL_TO ||
-      process.env.SMTP_USER!;
+      process.env.SMTP_USER;
+
+    if (!to) {
+      console.error("[DESIRE] No recipient email configured");
+      return NextResponse.json(
+        { ok: false, error: "Email recipient not configured" },
+        { status: 500 }
+      );
+    }
 
     const subject = `New desire submission${name ? ` from ${name}` : ""}`;
 

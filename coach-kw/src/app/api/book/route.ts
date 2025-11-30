@@ -6,8 +6,17 @@ import { buildICS } from "@/lib/ics";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
+  console.log("[BOOKING] Incoming request");
+  
   try {
     const body = await req.json();
+    console.log("[BOOKING] Body received", { 
+      hasName: !!body.name, 
+      hasEmail: !!body.email,
+      hasProgram: !!body.program,
+      hasDate: !!body.date,
+      hasTime: !!body.time 
+    });
 
     const name = body.name ?? "";
     const email = body.email ?? "";
@@ -21,7 +30,23 @@ export async function POST(req: Request) {
       process.env.BOOKING_INBOX ||
       process.env.BOOKING_TO_EMAIL ||
       process.env.MAIL_TO ||
-      process.env.SMTP_USER!;
+      process.env.SMTP_USER;
+
+    console.log("[BOOKING] Email configuration check", {
+      hasBOOKING_INBOX: !!process.env.BOOKING_INBOX,
+      hasBOOKING_TO_EMAIL: !!process.env.BOOKING_TO_EMAIL,
+      hasMAIL_TO: !!process.env.MAIL_TO,
+      hasSMTP_USER: !!process.env.SMTP_USER,
+      finalTo: to,
+    });
+
+    if (!to) {
+      console.error("[BOOKING] No recipient email configured - missing all booking email env vars");
+      return NextResponse.json(
+        { ok: false, error: "Email recipient not configured" },
+        { status: 500 }
+      );
+    }
 
     const subject = `New booking: ${program || "Unknown program"} – ${name}`;
 
@@ -69,6 +94,7 @@ export async function POST(req: Request) {
       }
     }
 
+    console.log("[BOOKING] Attempting to send email via SMTP");
     await sendEmail({
       to,
       subject,
@@ -82,7 +108,9 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("[BOOKING] API error", {
       message: error?.message,
+      code: error?.code,
       stack: error?.stack,
+      name: error?.name,
     });
 
     return NextResponse.json(
