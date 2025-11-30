@@ -63,15 +63,18 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {
+    // Log full error details for debugging in Vercel logs
     console.error("[CONTACT] API error", {
       message: error?.message,
-      code: error?.code,
-      stack: error?.stack,
+      code: (error as any)?.code,
       name: error?.name,
+      stack: error?.stack,
     });
 
+    // Return the actual error message (which now includes SMTP error details)
+    // This allows the frontend and logs to see the real cause
     return NextResponse.json(
-      { ok: false, error: "Failed to send contact email" },
+      { ok: false, error: error?.message || "Failed to send contact email" },
       { status: 500 }
     );
   }

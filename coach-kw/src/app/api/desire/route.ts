@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       process.env.SMTP_USER;
 
     if (!to) {
-      console.error("[DESIRE] No recipient email configured");
+      console.error("[DESIRE] No recipient email configured - missing DESIRE_INBOX, MAIL_TO, and SMTP_USER");
       return NextResponse.json(
         { ok: false, error: "Email recipient not configured" },
         { status: 500 }
@@ -39,6 +39,7 @@ export async function POST(req: Request) {
       .filter(Boolean)
       .join("\n");
 
+    console.log("[DESIRE] Attempting to send email via SMTP");
     await sendEmail({
       to,
       subject,
@@ -49,13 +50,18 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {
+    // Log full error details for debugging in Vercel logs
     console.error("[DESIRE] API error", {
       message: error?.message,
+      code: (error as any)?.code,
+      name: error?.name,
       stack: error?.stack,
     });
 
+    // Return the actual error message (which now includes SMTP error details)
+    // This allows the frontend and logs to see the real cause
     return NextResponse.json(
-      { ok: false, error: "Failed to send desire submission" },
+      { ok: false, error: error?.message || "Failed to send desire submission" },
       { status: 500 }
     );
   }
