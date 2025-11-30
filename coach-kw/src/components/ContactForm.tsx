@@ -15,26 +15,52 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     
-    // Validate required fields
+    // Validate required fields before sending
     if (!form.name || !form.email || !form.message) {
       setStatus("error");
       setErrorMessage(locale === "ar" ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields");
       return;
     }
     
-    console.log("[CONTACT] Frontend: Submitting contact form", form);
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      setStatus("error");
+      setErrorMessage(locale === "ar" ? "البريد الإلكتروني غير صحيح" : "Please enter a valid email address");
+      return;
+    }
+    
+    console.log("[CONTACT] Frontend: Submitting contact form", { 
+      name: !!form.name, 
+      email: !!form.email, 
+      phone: !!form.phone, 
+      message: !!form.message 
+    });
     
     setStatus("loading");
     setErrorMessage("");
     
     try {
+      // Prepare message - include reason if provided
+      let fullMessage = form.message.trim();
+      if (form.reason && form.reason.trim()) {
+        fullMessage = `Reason: ${form.reason.trim()}\n\n${fullMessage}`;
+      }
+      
+      // Send to /api/contact endpoint
       const apiUrl = "/api/contact";
       console.log("[CONTACT] Frontend: POSTing to", apiUrl);
       
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim() || undefined,
+          reason: form.reason.trim() || undefined,
+          message: form.message.trim(),
+        }),
       });
       
       const data = await res.json();
@@ -64,7 +90,12 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       <input name="reason" value={form.reason} onChange={onChange} placeholder={t.contact.form.reason} className="rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3 focus-ring" />
       <textarea name="message" value={form.message} onChange={onChange} placeholder={t.contact.form.message} className="min-h-32 rounded-md border border-[var(--card-border)] bg-transparent px-4 py-3 focus-ring" />
       <div className="flex gap-3">
-        <button className="btn-primary" disabled={status === "loading"}>
+        <button 
+          type="submit"
+          className="btn-primary" 
+          disabled={status === "loading"}
+          aria-disabled={status === "loading"}
+        >
           {status === "loading" 
             ? (locale === "ar" ? "جارٍ الإرسال…" : "Sending…") 
             : t.contact.form.submit}
@@ -74,7 +105,7 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       {status === "success" && (
         <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(200, 162, 74, 0.1)', border: '1px solid var(--accent)' }}>
           <p className="text-sm font-medium" style={{ color: 'var(--accent)' }}>
-            {locale === "ar" ? "✓ تم الإرسال!" : "✓ Message sent!"}
+            {locale === "ar" ? "تم إرسال رسالتك بنجاح. شكرًا لك!" : "✓ Your message has been sent successfully. Thank you!"}
           </p>
         </div>
       )}
@@ -82,7 +113,7 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       {status === "error" && (
         <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444' }}>
           <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
-            {errorMessage || (locale === "ar" ? "✗ حدث خطأ. يرجى المحاولة مرة أخرى." : "✗ Something went wrong. Please try again.")}
+            {errorMessage || (locale === "ar" ? "حدث خطأ، حاول مرة أخرى." : "✗ Something went wrong. Please try again.")}
           </p>
         </div>
       )}

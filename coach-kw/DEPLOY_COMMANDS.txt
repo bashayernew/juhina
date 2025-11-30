@@ -1,0 +1,22 @@
+🚨 URGENT: Copy and paste these commands in Terminal
+
+cd coach-kw
+git add .
+git commit -m "Remove Resend completely, use Hotmail SMTP only"
+git push
+
+Then IMMEDIATELY go to Vercel Dashboard:
+1. Settings → Environment Variables
+2. DELETE: RESEND_API_KEY
+3. VERIFY these exist:
+   - SMTP_HOST = smtp.office365.com
+   - SMTP_PORT = 587
+   - SMTP_USER = Janon.m@hotmail.com
+   - SMTP_PASS = vewkxntegktyygcv
+   - SMTP_FROM = CoachKW <Janon.m@hotmail.com>
+   - MAIL_TO = Janon.m@hotmail.com
+
+4. Go to Deployments → Click "Redeploy" on latest
+
+THIS WILL FIX THE RESEND ERROR IMMEDIATELY!
+

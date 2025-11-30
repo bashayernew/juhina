@@ -1,0 +1,29 @@
+🚀 DEPLOYMENT COMMANDS
+=====================
+
+Open Terminal/Git Bash in the coach-kw folder and run:
+
+1. Check status:
+   git status
+
+2. Add all changes:
+   git add .
+
+3. Commit:
+   git commit -m "Remove Resend, migrate to Hotmail SMTP only"
+
+4. Push to deploy:
+   git push
+
+After pushing, Vercel will automatically deploy!
+
+VERCEL ENVIRONMENT VARIABLES (Check in Vercel Dashboard):
+- SMTP_HOST = smtp.office365.com
+- SMTP_PORT = 587
+- SMTP_USER = Janon.m@hotmail.com
+- SMTP_PASS = vewkxntegktyygcv
+- SMTP_FROM = CoachKW <Janon.m@hotmail.com>
+- MAIL_TO = Janon.m@hotmail.com
+
+✅ All code is ready - just push to deploy!
+

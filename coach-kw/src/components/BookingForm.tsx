@@ -133,14 +133,14 @@ export default function BookingForm({ locale = 'en' }: { locale?: 'en' | 'ar' })
       {ok === true && (
         <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(200, 162, 74, 0.1)', border: '1px solid var(--accent)' }}>
           <p className="text-sm font-medium" style={{ color: 'var(--accent)' }}>
-            {t('✓ Sent! We will confirm within 24 hours.','✓ تم الإرسال! سنؤكد خلال 24 ساعة.')}
+            {locale === 'ar' ? 'تم إرسال طلب الحجز بنجاح. سنقوم بالتواصل معك قريبًا!' : '✓ Booking request sent successfully. We will contact you soon!'}
           </p>
         </div>
       )}
       {ok === false && (
         <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444' }}>
           <p className="text-sm font-medium" style={{ color: '#ef4444' }}>
-            {t('✗ Something went wrong. Please try again or contact us directly.','✗ حدث خطأ. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.')}
+            {locale === 'ar' ? 'حدث خطأ، حاول مرة أخرى.' : '✗ Something went wrong. Please try again.'}
           </p>
         </div>
       )}

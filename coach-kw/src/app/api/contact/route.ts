@@ -1,8 +1,9 @@
 // coach-kw/src/app/api/contact/route.ts
+// Production-ready contact form email handler using SMTP (Nodemailer)
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import { sendEmail } from "@/lib/mailer";
 
 export async function POST(req: Request) {
   console.log("[CONTACT] incoming request");
@@ -14,30 +15,28 @@ export async function POST(req: Request) {
     const { name, email, phone, reason, message } = body ?? {};
 
     // Validate required fields
-    if (!name || !email || !message) {
-      console.error("[CONTACT] Missing required fields", { name: !!name, email: !!email, message: !!message });
-      return NextResponse.json({ ok: false, error: "Name, email, and message are required" }, { status: 400 });
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      console.error("[CONTACT] Missing required field: name");
+      return NextResponse.json({ ok: false, error: "Name is required and must be a non-empty string." }, { status: 400 });
     }
 
-    // Set email addresses with fallbacks
-    // IMPORTANT: To send to Janon.m@hotmail.com (or any email), you must verify a domain in Resend
-    // 1. Go to https://resend.com/domains and verify your domain (e.g., juhina.vercel.app)
-    // 2. Set FROM_EMAIL env var to use your verified domain: "CoachKW <noreply@yourdomain.com>"
-    // 3. Then you can send to any email address including Janon.m@hotmail.com
-    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.CONTACT_INBOX || process.env.BOOKING_INBOX || "Janon.m@hotmail.com";
-    const fromEmail = process.env.FROM_EMAIL || process.env.CONTACT_FROM || process.env.BOOKING_FROM || "CoachKW <onboarding@resend.dev>";
-    const resendApiKey = process.env.RESEND_API_KEY;
-    
-    console.log("[CONTACT] env check", { hasKey: !!resendApiKey, to: toEmail, from: fromEmail });
-    
-    if (!resendApiKey) {
-      console.error("[CONTACT] Missing RESEND_API_KEY");
-      return NextResponse.json({ ok: false, error: "Email service not configured" }, { status: 500 });
+    if (!email || typeof email !== "string" || email.trim().length === 0) {
+      console.error("[CONTACT] Missing required field: email");
+      return NextResponse.json({ ok: false, error: "Email is required and must be a non-empty string." }, { status: 400 });
     }
 
-    // Send email via Resend
-    const resend = new Resend(resendApiKey);
-    
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      console.error("[CONTACT] Invalid email format:", email);
+      return NextResponse.json({ ok: false, error: "Invalid email format." }, { status: 400 });
+    }
+
+    if (!message || typeof message !== "string" || message.trim().length === 0) {
+      console.error("[CONTACT] Missing required field: message");
+      return NextResponse.json({ ok: false, error: "Message is required and must be a non-empty string." }, { status: 400 });
+    }
+
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -77,39 +76,42 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    const emailResult = await resend.emails.send({
-      from: fromEmail,
-      to: toEmail,
-      replyTo: email,
-      subject: `New Contact Form Submission${reason ? ` — ${reason}` : ""}`,
+    const subject = `New Website Message - ${name.trim()}`;
+    
+    const textContent = [
+      `New contact message from website:`,
+      ``,
+      `Name: ${name.trim()}`,
+      `Email: ${email.trim()}`,
+      `Phone: ${phone ? phone.trim() : "Not provided"}`,
+      `Reason: ${reason ? reason.trim() : "Not provided"}`,
+      ``,
+      `Message:`,
+      message.trim(),
+      ``,
+      `Submitted at: ${new Date().toISOString()}`,
+    ].join("\n");
+
+    console.log("[CONTACT] Attempting to send email via SMTP mailer");
+    
+    const result = await sendEmail({
+      subject,
+      text: textContent,
       html: htmlContent,
-      text: `
-New contact form submission:
-
-Name: ${name}
-Email: ${email}
-${phone ? `Phone: ${phone}\n` : ""}${reason ? `Reason: ${reason}\n` : ""}
-Message:
-${message}
-
----
-This was submitted from the contact form on the website.
-      `.trim(),
+      replyTo: email.trim(),
     });
 
-    console.log("[CONTACT] resend response", emailResult);
-
-    if (emailResult.error) {
-      console.error("[CONTACT] resend error", emailResult.error);
-      return NextResponse.json({ ok: false, error: emailResult.error.message || "Failed to send email" }, { status: 500 });
+    if (!result.success) {
+      console.error("[CONTACT] Failed to send email:", result.error);
+      return NextResponse.json({ ok: false, error: "Failed to send contact email" }, { status: 500 });
     }
 
-    const emailId = (emailResult.data as any)?.id || null;
-    return NextResponse.json({ ok: true, emailId }, { status: 200 });
+    console.log("[CONTACT] Email sent successfully", result.messageId);
+    return NextResponse.json({ ok: true }, { status: 200 });
     
   } catch (error: any) {
-    console.error("[CONTACT] resend error", error);
-    return NextResponse.json({ ok: false, error: error?.message || "Failed to send contact form" }, { status: 500 });
+    console.error("[CONTACT] Error:", error);
+    return NextResponse.json({ ok: false, error: "Failed to send contact form" }, { status: 500 });
   }
 }
 

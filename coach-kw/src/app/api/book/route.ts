@@ -1,9 +1,10 @@
 // coach-kw/src/app/api/book/route.ts
+// Production-ready booking form email handler using SMTP (Nodemailer)
 export const runtime = "nodejs";
 
 import { Buffer } from "buffer";
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import { sendEmail } from "@/lib/mailer";
 import { buildICS } from "@/lib/ics";
 
 export async function POST(req: Request) {
@@ -16,42 +17,60 @@ export async function POST(req: Request) {
     const { name, email, phone, program, date, time, durationMins = 60, notes } = body ?? {};
 
     // Validate required fields
-    if (!name || !email || !phone || !program || !date || !time) {
-      console.error("[BOOKING] Missing required fields", { name: !!name, email: !!email, phone: !!phone, program: !!program, date: !!date, time: !!time });
-      return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: name");
+      return NextResponse.json({ ok: false, error: "Name is required and must be a non-empty string." }, { status: 400 });
     }
 
-    // Set email addresses with fallbacks
-    // IMPORTANT: To send to Janon.m@hotmail.com (or any email), you must verify a domain in Resend
-    // 1. Go to https://resend.com/domains and verify your domain (e.g., juhina.vercel.app)
-    // 2. Set FROM_EMAIL env var to use your verified domain: "CoachKW <noreply@yourdomain.com>"
-    // 3. Then you can send to any email address including Janon.m@hotmail.com
-    const toEmail = process.env.BOOKING_TO_EMAIL || process.env.BOOKING_INBOX || "Janon.m@hotmail.com";
-    const fromEmail = process.env.FROM_EMAIL || process.env.BOOKING_FROM || "CoachKW <onboarding@resend.dev>";
-    const resendApiKey = process.env.RESEND_API_KEY;
-    
-    console.log("[BOOKING] env check", { hasKey: !!resendApiKey, to: toEmail, from: fromEmail });
-    
-    if (!resendApiKey) {
-      console.error("[BOOKING] Missing RESEND_API_KEY");
-      return NextResponse.json({ ok: false, error: "Email service not configured" }, { status: 500 });
+    if (!email || typeof email !== "string" || email.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: email");
+      return NextResponse.json({ ok: false, error: "Email is required and must be a non-empty string." }, { status: 400 });
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      console.error("[BOOKING] Invalid email format:", email);
+      return NextResponse.json({ ok: false, error: "Invalid email format." }, { status: 400 });
+    }
+
+    if (!phone || typeof phone !== "string" || phone.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: phone");
+      return NextResponse.json({ ok: false, error: "Phone is required and must be a non-empty string." }, { status: 400 });
+    }
+
+    if (!program || typeof program !== "string" || program.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: program");
+      return NextResponse.json({ ok: false, error: "Program is required and must be a non-empty string." }, { status: 400 });
+    }
+
+    if (!date || typeof date !== "string" || date.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: date");
+      return NextResponse.json({ ok: false, error: "Date is required and must be a non-empty string." }, { status: 400 });
+    }
+
+    if (!time || typeof time !== "string" || time.trim().length === 0) {
+      console.error("[BOOKING] Missing required field: time");
+      return NextResponse.json({ ok: false, error: "Time is required and must be a non-empty string." }, { status: 400 });
     }
 
     // Build Kuwait time start/end and create ICS
+    // Note: All emails are sent to MAIL_TO (configured in .env.local via mailer utility)
     const start = new Date(`${date}T${time}:00+03:00`);
     const end = new Date(start.getTime() + durationMins * 60000);
 
+    const mailTo = process.env.MAIL_TO;
+    if (!mailTo) {
+      return NextResponse.json({ ok: false, error: "MAIL_TO is not configured" }, { status: 500 });
+    }
     const icsText = buildICS({
       title: `${program} — ${name}`,
       description: `Client: ${name}\nEmail: ${email}\nPhone: ${phone}\nNotes: ${notes || "-"}`,
       startISO: start.toISOString(),
       endISO: end.toISOString(),
-      organizerEmail: toEmail,
+      organizerEmail: mailTo,
     });
 
-    // Send email via Resend
-    const resend = new Resend(resendApiKey);
-    
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -99,47 +118,54 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    const emailResult = await resend.emails.send({
-      from: fromEmail,
-      to: toEmail,
-      replyTo: email,
-      subject: `New Booking Request: ${program} — ${name}`,
+    const subject = `New Booking Request - ${name.trim()}`;
+    
+    const textContent = [
+      `New booking request from website:`,
+      ``,
+      `Name: ${name.trim()}`,
+      `Email: ${email.trim()}`,
+      `Phone: ${phone.trim()}`,
+      `Program: ${program.trim()}`,
+      `Date: ${date.trim()}`,
+      `Time: ${time.trim() || "Not specified"} (Asia/Kuwait timezone)`,
+      ``,
+      `Message:`,
+      notes ? notes.trim() : "No additional message.",
+      ``,
+      `Submitted at: ${new Date().toISOString()}`,
+      ``,
+      `• Click the attached .ics file to add this booking to your calendar.`,
+      `• Reply directly to this email to confirm with the client.`,
+    ].join("\n");
+
+    console.log("[BOOKING] Attempting to send email via SMTP mailer");
+    
+    const result = await sendEmail({
+      subject,
+      text: textContent,
       html: htmlContent,
-      text: `
-New booking request:
-
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Program: ${program}
-Preferred slot: ${date} ${time} (Asia/Kuwait)
-Notes: ${notes || "-"}
-
-• Click the attached .ics to add it to your calendar.
-• Reply to confirm with the client.
-      `.trim(),
+      replyTo: email.trim(),
       attachments: [
         {
           filename: "booking.ics",
-          content: Buffer.from(icsText, "utf-8").toString("base64"),
+          content: Buffer.from(icsText, "utf-8"),
           contentType: "text/calendar",
         },
       ],
     });
 
-    console.log("[BOOKING] resend response", emailResult);
-
-    if (emailResult.error) {
-      console.error("[BOOKING] resend error", emailResult.error);
-      return NextResponse.json({ ok: false, error: emailResult.error.message || "Failed to send email" }, { status: 500 });
+    if (!result.success) {
+      console.error("[BOOKING] Failed to send email:", result.error);
+      return NextResponse.json({ ok: false, error: "Failed to send booking email" }, { status: 500 });
     }
 
-    const emailId = (emailResult.data as any)?.id || null;
-    return NextResponse.json({ ok: true, emailId }, { status: 200 });
+    console.log("[BOOKING] Email sent successfully", result.messageId);
+    return NextResponse.json({ ok: true }, { status: 200 });
     
   } catch (error: any) {
-    console.error("[BOOKING] resend error", error);
-    return NextResponse.json({ ok: false, error: error?.message || "Failed to send booking request" }, { status: 500 });
+    console.error("[BOOKING] Error:", error);
+    return NextResponse.json({ ok: false, error: "Failed to send booking request" }, { status: 500 });
   }
 }
 
