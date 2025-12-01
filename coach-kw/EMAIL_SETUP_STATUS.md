@@ -168,3 +168,4 @@ MAIL_FROM=CoachKW <your-email@gmail.com>
 
 **Once `.env.local` is configured, emails will start working immediately!**
 
+

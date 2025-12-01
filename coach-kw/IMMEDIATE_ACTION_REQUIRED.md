@@ -123,3 +123,4 @@ If you're still getting 500 errors after following all steps:
 
 **Priority:** Push the code and check Vercel logs - they will tell us exactly what's wrong!
 
+

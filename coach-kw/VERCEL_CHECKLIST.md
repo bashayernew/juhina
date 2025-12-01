@@ -49,3 +49,4 @@ MAIL_TO = Janon.m@hotmail.com
 
 **DO THESE STEPS IN VERCEL NOW!** The error will stop once you remove RESEND_API_KEY and redeploy.
 
+
