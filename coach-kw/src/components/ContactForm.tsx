@@ -47,8 +47,8 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
         fullMessage = `Reason: ${form.reason.trim()}\n\n${fullMessage}`;
       }
       
-      // Send to /api/contact endpoint
-      const apiUrl = "/api/contact";
+      // Send to /api/send endpoint
+      const apiUrl = "/api/send";
       console.log("[CONTACT] Frontend: POSTing to", apiUrl);
       
       const res = await fetch(apiUrl, {
@@ -57,8 +57,8 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
         body: JSON.stringify({
           name: form.name.trim(),
           email: form.email.trim(),
-          phone: form.phone.trim() || undefined,
-          reason: form.reason.trim() || undefined,
+          phone: form.phone.trim() || "",
+          reason: form.reason.trim() || "",
           message: form.message.trim(),
         }),
       });
@@ -67,7 +67,7 @@ export default function ContactForm({ t, locale }: { t: any; locale: "en" | "ar"
       console.log("[CONTACT] Frontend: API response status", res.status);
       console.log("[CONTACT] Frontend: API response data", data);
       
-      if (res.ok && data.ok) {
+      if (res.ok && data.success) {
         console.log("[CONTACT] Frontend: Contact form submitted successfully");
         setStatus("success");
         setForm({ name: "", email: "", phone: "", reason: "", message: "" });

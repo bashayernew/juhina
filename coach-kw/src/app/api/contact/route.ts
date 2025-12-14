@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/lib/mailer";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   console.log("[CONTACT] Incoming request");
@@ -14,56 +16,54 @@ export async function POST(req: Request) {
       hasMessage: !!body.message 
     });
 
-    const name = body.name ?? "";
-    const email = body.email ?? "";
-    const phone = body.phone ?? "";
-    const reason = body.reason ?? "";
-    const message = body.message ?? "";
+    const { name, email, phone, reason, message } = body;
 
-    const to =
-      process.env.CONTACT_INBOX ||
-      process.env.MAIL_TO ||
-      process.env.SMTP_USER;
-
-    console.log("[CONTACT] Email configuration check", {
-      hasCONTACT_INBOX: !!process.env.CONTACT_INBOX,
-      hasMAIL_TO: !!process.env.MAIL_TO,
-      hasSMTP_USER: !!process.env.SMTP_USER,
-      finalTo: to,
-    });
-
-    if (!to) {
-      console.error("[CONTACT] No recipient email configured - missing CONTACT_INBOX, MAIL_TO, and SMTP_USER");
+    // Validate required fields
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { ok: false, error: "Email recipient not configured" },
+        { success: false, error: "Missing required fields: name, email, and message are required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json(
+        { success: false, error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    if (!process.env.RESEND_API_KEY) {
+      console.error("[CONTACT] RESEND_API_KEY is not configured");
+      return NextResponse.json(
+        { success: false, error: "Email service not configured" },
         { status: 500 }
       );
     }
 
-    const subject = `New contact form submission from ${name || "Unknown"}`;
-
-    const text = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `Reason: ${reason}`,
-      "",
-      "Message:",
-      message,
-    ].join("\n");
-
-    console.log("[CONTACT] Attempting to send email via SMTP");
-    await sendEmail({
-      to,
-      subject,
-      text,
+    console.log("[CONTACT] Attempting to send email via Resend");
+    
+    await resend.emails.send({
+      from: "Website Contact <onboarding@resend.dev>",
+      to: "Janon.m@hotmail.com",
+      subject: "New Contact Form Submission",
+      html: `
+        <h2>New Message</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+        <p><strong>Reason:</strong> ${reason || "Not provided"}</p>
+        <p><strong>Message:</strong><br>${message.replace(/\n/g, "<br>")}</p>
+      `
     });
 
-    console.log("[CONTACT] Contact email sent successfully");
+    console.log("[CONTACT] Contact email sent successfully via Resend");
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true, message: "Email sent successfully!" });
   } catch (error: any) {
-    // Log full error details for debugging in Vercel logs
+    // Log full error details for debugging
     console.error("[CONTACT] API error", {
       message: error?.message,
       code: (error as any)?.code,
@@ -71,10 +71,8 @@ export async function POST(req: Request) {
       stack: error?.stack,
     });
 
-    // Return the actual error message (which now includes SMTP error details)
-    // This allows the frontend and logs to see the real cause
     return NextResponse.json(
-      { ok: false, error: error?.message || "Failed to send contact email" },
+      { success: false, error: error?.message || "Failed to send contact email" },
       { status: 500 }
     );
   }
