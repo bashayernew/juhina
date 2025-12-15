@@ -50,7 +50,7 @@ function DesireFormSection({ t, locale, textAlign }: { t: any; locale: Locale; t
           phone: "", // no phone field on this form
           // tag the origin of the message in the reason field
           reason:
-            (locale === "ar" ? "نموذج جلسة الاكتشاف" : "Discovery Session form") || "",
+            locale === "ar" ? "نموذج جلسة الاكتشاف" : "Discovery Session form",
           // map the desire text to the shared `message` field
           message: desire.trim(),
         }),
@@ -66,7 +66,7 @@ function DesireFormSection({ t, locale, textAlign }: { t: any; locale: Locale; t
         setStatus("success");
         setDesire("");
         setEmail("");
-        setName();
+        setName("");
       } else {
         console.error("[DISCOVERY] Frontend: Discovery form failed", data.error);
         setStatus("error");
