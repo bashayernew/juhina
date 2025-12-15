@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       ${message.replace(/\n/g, "<br/>")}
     `;
 
-    // Send email via Resend
+    // Send email to site owner (client)
     const result = await resend.emails.send({
       from: "contact@juhainah-alshawaf.com",
       to: "Janon.m@hotmail.com",
@@ -66,7 +66,39 @@ export async function POST(req: Request) {
       html: htmlBody,
     });
 
-    console.log("[SEND] Email sent successfully", result);
+    console.log("[SEND] Owner email sent successfully", result);
+
+    // Send confirmation email to the user (do not fail the whole request if this throws)
+    try {
+      await resend.emails.send({
+        from: "contact@juhainah-alshawaf.com",
+        to: email,
+        subject: "تم استلام رسالتك – جُهينة الشواف",
+        html: `
+    <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right;">
+      <h2>شكرًا لتواصلك 🤍</h2>
+      <p>مرحبًا ${name},</p>
+      <p>تم استلام رسالتك بنجاح، وسأقوم بمراجعتها والرد عليك في أقرب وقت ممكن.</p>
+
+      <p><strong>ملخص رسالتك:</strong></p>
+      <blockquote style="border-right: 4px solid #d4af37; padding-right: 10px; margin: 10px 0;">
+        ${message}
+      </blockquote>
+
+      <p>مع خالص التحية،<br/>جُهينة الشواف</p>
+    </div>
+  `,
+      });
+      console.log("[SEND] User confirmation email sent successfully");
+    } catch (userEmailError: any) {
+      // Log but do not fail the whole request; owner email already sent
+      console.error("[SEND] Failed to send user confirmation email", {
+        message: userEmailError?.message,
+        code: (userEmailError as any)?.code,
+        name: userEmailError?.name,
+        stack: userEmailError?.stack,
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -90,4 +122,6 @@ export async function POST(req: Request) {
     );
   }
 }
+
+
 
