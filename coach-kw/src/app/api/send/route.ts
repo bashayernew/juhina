@@ -3,9 +3,25 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
+  console.log("[SEND] API called");
+
+  // Strict env check before initializing Resend
+  if (!process.env.RESEND_API_KEY) {
+    console.error("[SEND] Missing RESEND_API_KEY");
+    return NextResponse.json(
+      { success: false, error: "Email service not configured" },
+      { status: 500 }
+    );
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const FROM_EMAIL =
+    process.env.NODE_ENV === "production"
+      ? "contact@juhainah-alshawaf.com"
+      : "onboarding@resend.dev";
+
   try {
     const body = await req.json();
     const { name, email, phone, reason, message } = body;
@@ -13,9 +29,9 @@ export async function POST(req: Request) {
     // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "Missing required fields. Name, email, and message are required." 
+        {
+          success: false,
+          error: "Missing required fields. Name, email, and message are required.",
         },
         { status: 400 }
       );
@@ -25,27 +41,15 @@ export async function POST(req: Request) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "Invalid email format." 
+        {
+          success: false,
+          error: "Invalid email format.",
         },
         { status: 400 }
       );
     }
 
-    // Check if RESEND_API_KEY is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error("[SEND] RESEND_API_KEY is not configured");
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: "Email service not configured. Please contact the administrator." 
-        },
-        { status: 500 }
-      );
-    }
-
-    // Prepare email content with exact template
+    // Prepare email content with exact template for owner
     const htmlBody = `
       You received a new message from the website:<br/><br/>
       
@@ -58,20 +62,37 @@ export async function POST(req: Request) {
       ${message.replace(/\n/g, "<br/>")}
     `;
 
-    // Send email to site owner (client)
-    const result = await resend.emails.send({
-      from: "contact@juhainah-alshawaf.com",
-      to: "Janon.m@hotmail.com",
-      subject: "New Contact Form Submission – Juhaina Website",
-      html: htmlBody,
-    });
+    // Send email to site owner (client) - critical path
+    try {
+      const result = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: "Janon.m@hotmail.com",
+        subject: "New Contact Form Submission – Juhaina Website",
+        html: htmlBody,
+      });
 
-    console.log("[SEND] Owner email sent successfully", result);
+      console.log("[SEND] Owner email sent successfully", result);
+    } catch (ownerError: any) {
+      console.error("[SEND] Failed to send owner email", {
+        message: ownerError?.message,
+        name: ownerError?.name,
+        code: (ownerError as any)?.code,
+        stack: ownerError?.stack,
+      });
 
-    // Send confirmation email to the user (do not fail the whole request if this throws)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to send email. Please try again later.",
+        },
+        { status: 500 }
+      );
+    }
+
+    // Send confirmation email to the user (non-critical; errors logged only)
     try {
       await resend.emails.send({
-        from: "contact@juhainah-alshawaf.com",
+        from: FROM_EMAIL,
         to: email,
         subject: "تم استلام رسالتك – جُهينة الشواف",
         html: `
@@ -91,11 +112,10 @@ export async function POST(req: Request) {
       });
       console.log("[SEND] User confirmation email sent successfully");
     } catch (userEmailError: any) {
-      // Log but do not fail the whole request; owner email already sent
       console.error("[SEND] Failed to send user confirmation email", {
         message: userEmailError?.message,
-        code: (userEmailError as any)?.code,
         name: userEmailError?.name,
+        code: (userEmailError as any)?.code,
         stack: userEmailError?.stack,
       });
     }
@@ -105,23 +125,21 @@ export async function POST(req: Request) {
       message: "Email sent successfully!",
     });
   } catch (error: any) {
-    // Full error handling
     console.error("[SEND] Error sending email:", {
       message: error?.message,
-      code: (error as any)?.code,
       name: error?.name,
+      code: (error as any)?.code,
       stack: error?.stack,
     });
 
     return NextResponse.json(
       {
         success: false,
-        error: error?.message || "Failed to send email. Please try again later.",
+        error: "Failed to send email. Please try again later.",
       },
       { status: 500 }
     );
   }
 }
-
 
 
