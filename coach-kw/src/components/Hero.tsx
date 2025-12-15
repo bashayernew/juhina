@@ -11,29 +11,79 @@ function DesireFormSection({ t, locale, textAlign }: { t: any; locale: Locale; t
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!desire.trim()) return;
+    e.preventDefault(); // 2) prevent default form submission / page reload
+
+    if (!desire.trim()) {
+      // Mirror ContactForm-style validation but keep existing UI text
+      setStatus("error");
+      setErrorMessage(
+        locale === "ar"
+          ? "يرجى كتابة رسالتك قبل الإرسال"
+          : "Please enter your message before submitting"
+      );
+      return;
+    }
+
+    console.log("[DISCOVERY] Frontend: Submitting discovery form", {
+      name: !!name,
+      email: !!email,
+      desire: !!desire,
+    });
 
     setStatus("loading");
+    setErrorMessage("");
+
     try {
-      const res = await fetch("/api/desire", {
+      // 3) submit via POST /api/send with same payload shape as ContactForm
+      const apiUrl = "/api/send";
+      console.log("[DISCOVERY] Frontend: POSTing to", apiUrl);
+
+      const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ desire: desire.trim(), email: email.trim() || undefined, name: name.trim() || undefined }),
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: "", // no phone field on this form
+          // tag the origin of the message in the reason field
+          reason:
+            (locale === "ar" ? "نموذج جلسة الاكتشاف" : "Discovery Session form") || "",
+          // map the desire text to the shared `message` field
+          message: desire.trim(),
+        }),
       });
+
       const data = await res.json();
-      if (data.ok) {
+      console.log("[DISCOVERY] Frontend: API response status", res.status);
+      console.log("[DISCOVERY] Frontend: API response data", data);
+
+      // 5) handle success/error like ContactForm (res.ok + data.success)
+      if (res.ok && data.success) {
+        console.log("[DISCOVERY] Frontend: Discovery form submitted successfully");
         setStatus("success");
         setDesire("");
         setEmail("");
-        setName("");
+        setName();
       } else {
+        console.error("[DISCOVERY] Frontend: Discovery form failed", data.error);
         setStatus("error");
+        setErrorMessage(
+          locale === "ar"
+            ? data.error || t.error
+            : data.error || t.error
+        );
       }
-    } catch {
+    } catch (err: any) {
+      console.error("[DISCOVERY] Frontend: Network error", err);
       setStatus("error");
+      setErrorMessage(
+        locale === "ar"
+          ? "حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى."
+          : "Connection error. Please try again."
+      );
     }
   }
 
@@ -93,10 +143,14 @@ function DesireFormSection({ t, locale, textAlign }: { t: any; locale: Locale; t
                 </button>
 
                 {status === "success" && (
-                  <p className="text-base font-medium text-[var(--accent)]">{t.success}</p>
+                  <p className="text-base font-medium text-[var(--accent)]">
+                    {t.success}
+                  </p>
                 )}
                 {status === "error" && (
-                  <p className="text-base font-medium text-red-500">{t.error}</p>
+                  <p className="text-base font-medium text-red-500">
+                    {errorMessage || t.error}
+                  </p>
                 )}
               </form>
 
